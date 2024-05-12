@@ -47,3 +47,11 @@ We welcome contributions to Map Service! If you have suggestions for improvement
 
 # License
 Distributed under the Apache License. See LICENSE for more information.
+
+
+
+
+http://192.168.1.14:8080/need-energy?location=28.7041,77.1025&energy-type=gas
+
+for EV charging station use 700-7600-0322
+for gas station use 700-7600-0116

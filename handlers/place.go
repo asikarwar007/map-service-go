@@ -2,12 +2,10 @@
 package handlers
 
 import (
-	"log"
 	"encoding/json"
-	"net/http"
-	"net/url"
 	"map-service-go/models"
 	"map-service-go/utils"
+	"net/http"
 )
 
 func DiscoverPlaceHandler(w http.ResponseWriter, r *http.Request) {
@@ -17,21 +15,35 @@ func DiscoverPlaceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	location := r.URL.Query().Get("location")
-	escapedQuery := url.QueryEscape(r.URL.Query().Get("q"))
+	energyType := r.URL.Query().Get("energy-type")
+	language := r.URL.Query().Get("lang")
+	if language == "" {
+		language = "en"
+	}
+	// category := r.URL.Query().Get("category")
 
 	searchQuery := models.PlaceRequestQuery{
 		Location: location,
-		Query: escapedQuery,
+		Category: getCategory(energyType),
+		Language: language,
 	}
-	log.Println("searchQuery: %s",searchQuery)
 
 	petrolPumpResponse, err := utils.SearchPlace(searchQuery)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(petrolPumpResponse)
 
+}
+func getCategory(energyType string) string {
+	if energyType == "gas" {
+		return "700-7600-0116"
+	}
+	if energyType == "ev" {
+		return "700-7600-0322"
+	}
+	return ""
 }
